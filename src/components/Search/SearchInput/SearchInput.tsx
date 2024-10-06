@@ -12,22 +12,6 @@ export interface InputWithIconProps {
 
 const SearchInput: React.FC<InputWithIconProps> = ({ inputValue, loading, clearInput, handleInputChange }) => {
     return (
-        // <>
-        //     <FormControl
-        //         placeholder="Search city..."
-        //         value={inputValue}
-        //         onChange={handleInputChange}
-        //         aria-label="City Search"
-        //         className="search-input"
-        //     />
-        //     <InputGroup.Text className="clear-icon" role="button" data-testid="clear-icon">
-        //         {loading ? (
-        //             <div className="spinner-border spinner-border-sm" role="status" style={{ width: '18px', height: '18px' }}></div>
-        //         ) : (
-        //             inputValue && <XCircle size={18} onClick={clearInput} style={{ cursor: 'pointer' }} />
-        //         )}
-        //     </InputGroup.Text>
-        // </>
         <>
             <FormControl
                 placeholder="Search city..."
