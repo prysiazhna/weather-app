@@ -1,0 +1,27 @@
+.next-forecast {
+    display: flex;
+
+    .forecast-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-radius: 16px;
+        color: black;
+        border: none;
+    }
+
+    .small-text {
+        font-size: 0.85rem;
+    }
+
+    .weather-icon {
+        display: inline-block;
+
+        &.weather-icon-medium {
+            width: 100px;
+            height: 100px;
+        }
+    }
+}
+

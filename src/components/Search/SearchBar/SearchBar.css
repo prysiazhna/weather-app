@@ -1,0 +1,26 @@
+.wrapper {
+    position: relative;
+
+    .input-group {
+        .form-control {
+            border: none;
+
+            &:focus {
+                outline: none;
+                border: none;
+                box-shadow: none;
+            }
+        }
+
+        .input-group-text {
+            background-color: white;
+            border: none;
+        }
+    }
+
+    .search-bar-input-group {
+        border-radius: 10px;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+}

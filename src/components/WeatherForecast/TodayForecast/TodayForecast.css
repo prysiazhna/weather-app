@@ -1,0 +1,30 @@
+.weather-app-container {
+    .weather-card {
+        border-radius: 16px;
+        background: linear-gradient(135deg, #7d30d1 0%, #5997ff 100%);
+        color: white;
+        border: none;
+        min-height: 350px;
+
+        .weather-card-body {
+            height: 150px;
+        }
+    }
+}
+
+
+.forecast-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.weather-icon {
+    display: inline-block;
+
+    &.weather-icon-large {
+        width: 150px;
+        height: 150px;
+    }
+}

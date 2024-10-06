@@ -1,0 +1,10 @@
+.clear-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-input {
+    border: none;
+    padding: 10px 0;
+}
