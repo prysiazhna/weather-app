@@ -5,12 +5,14 @@ export const handleApiError = (error: unknown): void => {
     console.error('API error occurred:', error);
 };
 
+const API_KEY = '6b6d8a7cbe2d4911be551313242010';
+
 export const fetchCitySuggestions = async (query: string): Promise<CitySuggestion[]> => {
     try {
         const response = await apiClient.get('/search.json', {
             params: {
                 q: query,
-                key: process.env.REACT_APP_API_KEY,
+                key: API_KEY,
             }
         });
 
@@ -31,7 +33,7 @@ export const fetchForecast = async (lat: string, lon: string): Promise<any> => {
     try {
         const response = await apiClient.get('/forecast.json', {
             params: {
-                key: process.env.REACT_APP_API_KEY,
+                key: API_KEY,
                 q: `${lat},${lon}`,
                 days: 3
             }
