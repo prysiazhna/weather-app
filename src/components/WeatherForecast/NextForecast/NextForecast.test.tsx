@@ -1,64 +1,57 @@
 import React from 'react';
-import {render, screen} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import NextForecast from './NextForecast';
+import { ForecastDay } from '../../../types/WeatherTypes';
+import { getWeekDay } from '../../../utils/getWeekDay';
+import {mockDayData} from "../../../__mocks__/mockForecastData";
 
-const mockPeriods = [
-    {
-        number: 1,
-        name: 'Monday',
-        temperature: 75,
-        temperatureUnit: 'F',
-        shortForecast: 'Sunny',
-        icon: '',
-        isDaytime: true,
+const createMockForecastDay = (
+    date: string,
+    conditionText: string,
+    avgTempF: number
+): ForecastDay => ({
+    date,
+    day: {
+        ...mockDayData,
+        avgtemp_f: avgTempF,
+        condition: { text: conditionText },
     },
-    {
-        number: 2,
-        name: 'Tuesday',
-        temperature: 68,
-        temperatureUnit: 'F',
-        shortForecast: 'Cloudy',
-        icon: '',
-        isDaytime: false,
-    },
-    {
-        number: 3,
-        name: 'Wednesday',
-        temperature: 80,
-        temperatureUnit: 'F',
-        shortForecast: 'Rainy',
-        icon: '',
-        isDaytime: true,
-    },
+});
+
+const mockNextDays: ForecastDay[] = [
+    createMockForecastDay('2024-11-11', 'Sunny', 75),
+    createMockForecastDay('2024-11-12', 'Cloudy', 68),
+    createMockForecastDay('2024-11-13', 'Rainy', 80),
 ];
 
+const renderComponent = (nextDays = mockNextDays) => render(<NextForecast nextDays={nextDays} />);
+
 describe('NextForecast Component', () => {
-    it('should render without errors', () => {
-        render(<NextForecast periods={mockPeriods}/>);
-        const nextForecastElement = screen.getByTestId('next-forecast');
-        expect(nextForecastElement).toBeInTheDocument();
+    it('renders without errors', () => {
+        renderComponent();
+        expect(screen.getByTestId('next-forecast')).toBeInTheDocument();
     });
 
-    it('should display the correct number of periods', () => {
-        render(<NextForecast periods={mockPeriods}/>);
-        const forecastCards = screen.getAllByTestId('period');
-        expect(forecastCards.length).toBe(mockPeriods.length);
-    });
-
-
-    it('should display the correct temperature and forecast for each period', () => {
-        render(<NextForecast periods={mockPeriods}/>);
-        mockPeriods.forEach((period) => {
-            expect(screen.getByText(`${period.temperature}°${period.temperatureUnit}`)).toBeInTheDocument();
-            expect(screen.getByText(period.shortForecast)).toBeInTheDocument();
+    describe('Forecast Cards', () => {
+        it('displays the correct number of forecast cards', () => {
+            renderComponent();
+            expect(screen.getAllByTestId('period')).toHaveLength(mockNextDays.length);
         });
-    });
 
-    it('should display the correct day names', () => {
-        render(<NextForecast periods={mockPeriods}/>);
-        mockPeriods.forEach((period) => {
-            expect(screen.getByText(period.name)).toBeInTheDocument();
+        it('displays the correct temperature and forecast for each day', () => {
+            renderComponent();
+            mockNextDays.forEach(({ day }) => {
+                expect(screen.getByText(`${day.avgtemp_f}°F`)).toBeInTheDocument();
+                expect(screen.getByText(day.condition.text)).toBeInTheDocument();
+            });
+        });
+
+        it('displays the correct day names', () => {
+            renderComponent();
+            mockNextDays.forEach(({ date }) => {
+                expect(screen.getByText(getWeekDay(date))).toBeInTheDocument();
+            });
         });
     });
 });

@@ -23,9 +23,9 @@ const SearchInput: React.FC<InputWithIconProps> = ({ inputValue, loading, clearI
             {(inputValue || loading) && (
                 <InputGroup.Text className="clear-icon" role="button" data-testid="clear-icon">
                     {loading ? (
-                        <div className="spinner-border spinner-border-sm" role="status" style={{ width: '18px', height: '18px' }}></div>
+                        <div className="spinner-border spinner-border-sm" role="status"></div>
                     ) : (
-                        <XCircle size={18} onClick={clearInput} style={{ cursor: 'pointer' }} />
+                        <XCircle  size={18} onClick={clearInput} />
                     )}
                 </InputGroup.Text>
             )}

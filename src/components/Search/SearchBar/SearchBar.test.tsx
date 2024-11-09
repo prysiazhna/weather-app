@@ -2,109 +2,83 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SearchBar from './SearchBar';
-import * as useCitySearchHook from '../../../hooks/useCitySearch';
-import * as useCurrentLocationHook from '../../../hooks/useCurrentLocation';
-import { PhotonSuggestion } from '../../../types/WeatherTypes';
+import useCitySearch from '../../../hooks/useCitySearch';
+
+jest.mock('../../../hooks/useCitySearch');
 
 describe('SearchBar Component', () => {
     const mockOnSelectCity = jest.fn();
+    const mockClearInput = jest.fn();
+    const mockHandleInputChange = jest.fn();
+    const mockHandleCitySelect = jest.fn();
 
     beforeEach(() => {
-        jest.spyOn(useCitySearchHook, 'default').mockReturnValue({
-            inputValue: 'Seattle',
-            setInputValue: jest.fn(),
+        (useCitySearch as jest.Mock).mockReturnValue({
+            inputValue: '',
             suggestions: [
-                { name: 'Seattle', countryName: 'USA', lat: '47.6062', lon: '-122.3321' },
-                { name: 'Kyiv', countryName: 'Ukraine', lat: '50.4501', lon: '30.5234' },
-            ] as PhotonSuggestion[],
-            setSuggestions: jest.fn(),
+                { name: 'New York', lat: '40.7128', lon: '-74.0060', country: 'US' },
+                { name: 'Los Angeles', lat: '34.0522', lon: '-118.2437', country: 'US' },
+            ],
             loading: false,
-            setLoading: jest.fn(),
-            clearInput: jest.fn(),
-            handleCitySelect: jest.fn(),
-            handleInputChange: jest.fn(),
-        });
-
-        jest.spyOn(useCurrentLocationHook, 'default').mockReturnValue({
-            handleGetCurrentLocation: jest.fn(),
-            loading: false,
+            clearInput: mockClearInput,
+            handleInputChange: mockHandleInputChange,
+            handleCitySelect: mockHandleCitySelect,
         });
     });
 
-    it('should render SearchBar without crashing', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('renders without errors', () => {
         render(<SearchBar onSelectCity={mockOnSelectCity} />);
         expect(screen.getByTestId('search-bar')).toBeInTheDocument();
     });
 
-    it('should render the input field with default value', () => {
+    it('renders SearchInput and SuggestionList components with correct props', () => {
         render(<SearchBar onSelectCity={mockOnSelectCity} />);
-        const inputElement = screen.getByRole('textbox');
-        expect(inputElement).toHaveValue('Seattle');
+
+        const searchInput = screen.getByRole('textbox');
+        expect(searchInput).toBeInTheDocument();
+        expect(searchInput).toHaveValue('');
+
+        expect(screen.getByText('New York, US')).toBeInTheDocument();
+        expect(screen.getByText('Los Angeles, US')).toBeInTheDocument();
     });
 
-    it('should display suggestions when available', () => {
+    it('calls handleInputChange when input changes', () => {
         render(<SearchBar onSelectCity={mockOnSelectCity} />);
-        expect(screen.getByText('Seattle, USA')).toBeInTheDocument();
-        expect(screen.getByText('Kyiv, Ukraine')).toBeInTheDocument();
+        const searchInput = screen.getByRole('textbox');
+
+        fireEvent.change(searchInput, { target: { value: 'Seattle' } });
+        expect(mockHandleInputChange).toHaveBeenCalledTimes(1);
     });
 
-    it('should trigger handleCitySelect when a suggestion is clicked', () => {
-        const handleCitySelect = jest.fn();
-        jest.spyOn(useCitySearchHook, 'default').mockReturnValueOnce({
-            inputValue: 'Seattle',
-            setInputValue: jest.fn(),
-            suggestions: [
-                { name: 'Seattle', countryName: 'USA', lat: '47.6062', lon: '-122.3321' },
-                { name: 'Kyiv', countryName: 'Ukraine', lat: '50.4501', lon: '30.5234' },
-            ] as PhotonSuggestion[],
-            setSuggestions: jest.fn(),
-            loading: false,
-            setLoading: jest.fn(),
-            clearInput: jest.fn(),
-            handleCitySelect,
-            handleInputChange: jest.fn(),
+    it('calls handleCitySelect when a suggestion is clicked', () => {
+        render(<SearchBar onSelectCity={mockOnSelectCity} />);
+
+        const suggestion = screen.getByText('New York, US');
+        fireEvent.click(suggestion);
+
+        expect(mockHandleCitySelect).toHaveBeenCalledWith({
+            name: 'New York',
+            lat: '40.7128',
+            lon: '-74.0060',
+            country: 'US',
         });
-
-        render(<SearchBar onSelectCity={mockOnSelectCity} />);
-        const suggestionItem = screen.getByText('Seattle, USA');
-        fireEvent.click(suggestionItem);
-        expect(handleCitySelect).toHaveBeenCalledTimes(1);
     });
 
-    it('should trigger handleGetCurrentLocation when the GeoAltFill icon is clicked', () => {
-        const handleGetCurrentLocation = jest.fn();
-        jest.spyOn(useCurrentLocationHook, 'default').mockReturnValueOnce({
-            handleGetCurrentLocation,
-            loading: false,
-        });
-
-        render(<SearchBar onSelectCity={mockOnSelectCity} />);
-        const geoIcon = screen.getByLabelText('get-location');
-        fireEvent.click(geoIcon);
-        expect(handleGetCurrentLocation).toHaveBeenCalledTimes(1);
-    });
-
-
-    it('should show loading indicator when fetching location or searching for cities', () => {
-        jest.spyOn(useCitySearchHook, 'default').mockReturnValueOnce({
+    it('displays loading spinner in SearchInput when loading is true', () => {
+        (useCitySearch as jest.Mock).mockReturnValue({
             inputValue: '',
-            setInputValue: jest.fn(),
             suggestions: [],
-            setSuggestions: jest.fn(),
             loading: true,
-            setLoading: jest.fn(),
-            clearInput: jest.fn(),
-            handleCitySelect: jest.fn(),
-            handleInputChange: jest.fn(),
-        });
-
-        jest.spyOn(useCurrentLocationHook, 'default').mockReturnValueOnce({
-            handleGetCurrentLocation: jest.fn(),
-            loading: true,
+            clearInput: mockClearInput,
+            handleInputChange: mockHandleInputChange,
+            handleCitySelect: mockHandleCitySelect,
         });
 
         render(<SearchBar onSelectCity={mockOnSelectCity} />);
-        const loadingIndicator = screen.getByRole('status');
-        expect(loadingIndicator).toBeInTheDocument();
+        expect(screen.getByRole('status')).toBeInTheDocument();
     });
 });

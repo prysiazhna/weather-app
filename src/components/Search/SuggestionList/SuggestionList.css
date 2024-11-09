@@ -1,6 +1,6 @@
 .suggestions-list {
     position: absolute;
-    width: 100%;
+    width: 521px;
     border: 1px solid #ddd;
     background-color: white;
     z-index: 1000;

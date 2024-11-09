@@ -1,19 +1,16 @@
-import {useState, useEffect, ChangeEvent} from 'react';
-import {useDebounce} from "./useDebounce";
-import {PhotonSuggestion} from "../types/WeatherTypes";
-import {fetchCitySuggestionsFromPhoton} from "../api/weatherService";
-import {fullAddress} from "../utils/fullAddress";
+import { useState, useEffect, ChangeEvent } from 'react';
+import { useDebounce } from './useDebounce';
+import {fetchCitySuggestions, handleApiError} from '../api/weatherService';
+import { CitySuggestion } from '../types/WeatherTypes';
 
-const useCitySearch = (onSelectCity: (lat: string, lon: string, city: string) => void) => {
+const useCitySearch = (fetchWeather: (lat: string, lon: string, city?: string) => void) => {
     const [inputValue, setInputValue] = useState('');
-    const [suggestions, setSuggestions] = useState<PhotonSuggestion[]>([]);
+    const [suggestions, setSuggestions] = useState<CitySuggestion[]>([]);
     const [loading, setLoading] = useState(false);
     const debouncedInput = useDebounce(inputValue, 300);
-    const [isShowSuggestions, setIsShowSuggestions] = useState(false);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
-        setIsShowSuggestions(false);
     };
 
     const clearInput = () => {
@@ -21,41 +18,33 @@ const useCitySearch = (onSelectCity: (lat: string, lon: string, city: string) =>
         setSuggestions([]);
     };
 
-    const handleCitySelect = (city: PhotonSuggestion) => {
-        let fullCityAddress = fullAddress(city);
-        setIsShowSuggestions(true);
-        setInputValue(fullCityAddress);
-        setSuggestions([]);
-        onSelectCity(city.lat, city.lon, fullCityAddress);
+    const handleCitySelect = (city: CitySuggestion) => {
+        setInputValue(city.name);
+        fetchWeather(city.lat, city.lon);
+        clearInput();
     };
 
     useEffect(() => {
-        if (debouncedInput.trim() && !isShowSuggestions) {
+        if (debouncedInput.trim()) {
             setLoading(true);
-            fetchCitySuggestionsFromPhoton(debouncedInput)
-                .then((cities) => {
-                    setSuggestions(cities);
-                })
+            fetchCitySuggestions(debouncedInput)
+                .then((cities) => setSuggestions(cities))
                 .catch((error) => {
-                    console.error('Failed to fetch city suggestions:', error);
+                    handleApiError(error)
+                    setSuggestions([]);
                 })
-                .finally(() => {
-                    setLoading(false);
-                });
+                .finally(() => setLoading(false));
         } else {
             setSuggestions([]);
         }
-    }, [debouncedInput, isShowSuggestions]);
+    }, [debouncedInput]);
 
     return {
         inputValue,
-        setInputValue,
         suggestions,
-        setSuggestions,
         loading,
-        setLoading,
-        handleInputChange,
         clearInput,
+        handleInputChange,
         handleCitySelect,
     };
 };

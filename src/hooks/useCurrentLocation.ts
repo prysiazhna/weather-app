@@ -1,32 +1,31 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getCurrentLocation } from '../utils/geolocation';
-import { getCurrentCityName } from '../api/weatherService';
 
 interface UseCurrentLocationProps {
-    onSelectCity: (lat: string, lon: string, city: string) => void;
+    fetchWeather: (lat: string, lon: string) => void;
 }
 
-const useCurrentLocation = ({ onSelectCity }: UseCurrentLocationProps) => {
+const useCurrentLocation = ({ fetchWeather }: UseCurrentLocationProps) => {
     const [loading, setLoading] = useState(false);
 
-    const handleGetCurrentLocation = async () => {
-        try {
-            setLoading(true);
-            const { lat, lon } = await getCurrentLocation();
-            const cityName = await getCurrentCityName(lat, lon);
+    useEffect(() => {
+        const getLocation = async () => {
+            try {
+                setLoading(true);
+                const { lat, lon } = await getCurrentLocation();
+                fetchWeather(lat, lon);
+            } catch (error) {
+                console.error('Failed to fetch current location:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-            onSelectCity(lat, lon, cityName);
-        } catch (error) {
-            console.error('Failed to fetch current location or city name:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+        getLocation();
 
-    return {
-        handleGetCurrentLocation,
-        loading
-    };
+    }, [fetchWeather]);
+
+    return { loading };
 };
 
 export default useCurrentLocation;

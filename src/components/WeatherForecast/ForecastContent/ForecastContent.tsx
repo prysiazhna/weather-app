@@ -3,38 +3,40 @@ import {Container, Row, Col} from 'react-bootstrap';
 import SearchBar from '../../Search/SearchBar/SearchBar';
 import TodayForecast from '../TodayForecast/TodayForecast';
 import NextForecast from '../NextForecast/NextForecast';
-import {useWeather} from '../../../hooks/useWeather';
-import {getNextForecast} from '../../../utils/nextForecast';
+import useCurrentLocation from '../../../hooks/useCurrentLocation';
+import useWeather from '../../../hooks/useWeather';
 
 const ForecastContent: React.FC = () => {
-    const {city, forecast, loading, error, handleCitySelect} = useWeather();
+    const {city, weather, loading, error, fetchWeather} = useWeather();
+    const {loading: locationLoading} = useCurrentLocation({fetchWeather});
 
-    const nextForecast = getNextForecast(forecast);
-
-    const renderContent = () => {
-        return (
-            <>
+    const renderContent = () => (
+        <>
+            <CenteredRow>
+                <Col xs={10} md={8} lg={6}>
+                    <TodayForecast
+                        data-testid="today-forecast"
+                        city={city}
+                        current={weather?.current}
+                        error={error}
+                        loading={loading || locationLoading}/>
+                </Col>
+            </CenteredRow>
+            {!loading && !locationLoading && !error && weather?.forecast && (
                 <CenteredRow>
                     <Col xs={10} md={8} lg={6}>
-                        <TodayForecast city={city} forecast={forecast[0]} loading={loading} error={error}/>
+                        <NextForecast nextDays={weather?.forecast.forecastday.slice(1)}/>
                     </Col>
                 </CenteredRow>
-                {!error && (
-                    <CenteredRow>
-                        <Col xs={10} md={8} lg={10}>
-                            <NextForecast periods={nextForecast}/>
-                        </Col>
-                    </CenteredRow>
-                )}
-            </>
-        );
-    };
+            )}
+        </>
+    );
 
     return (
         <Container fluid className="weather-app-container">
             <Row className="justify-content-center mt-5">
                 <Col xs={10} md={8} lg={6}>
-                    <SearchBar onSelectCity={handleCitySelect}/>
+                    <SearchBar onSelectCity={fetchWeather}/>
                 </Col>
             </Row>
             {renderContent()}

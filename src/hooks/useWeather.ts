@@ -1,44 +1,35 @@
-import { useState, useEffect } from 'react';
-import { Period } from '../types/WeatherTypes';
-import { fetchForecast, fetchGridPoint } from '../api/weatherService';
-import {DEFAULT_CITY, DEFAULT_DATA} from "../config/constants";
+import {useState, useCallback} from 'react';
+import {fetchForecast} from '../api/weatherService';
+import {Weather} from "../types/WeatherTypes";
 
-export const useWeather = () => {
-    const [city, setCity] = useState<string>(DEFAULT_CITY);
-    const [forecast, setForecast] = useState<Period[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+const useWeather = () => {
+    const [city, setCity] = useState<string | null>(null);
+    const [weather, setWeather] = useState<Weather | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchInitialForecast = async () => {
-        try {
-            setLoading(true);
-            const defaultData = await fetchForecast(DEFAULT_DATA.id, DEFAULT_DATA.x, DEFAULT_DATA.y);
-            setForecast(defaultData.properties.periods);
-        } catch {
-            setError('Failed to fetch default weather data.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleCitySelect = async (lat: string, lon: string, selectedCity: string) => {
+    const fetchWeather = useCallback(async (lat: string, lon: string) => {
         try {
             setLoading(true);
             setError(null);
-            const gridData = await fetchGridPoint(lat, lon);
-            const forecastData = await fetchForecast(gridData.properties.gridId, gridData.properties.gridX, gridData.properties.gridY);
-            setCity(selectedCity);
-            setForecast(forecastData.properties.periods);
-        } catch {
-            setError('Failed to fetch weather data for the selected city.');
+            const weatherData = await fetchForecast(lat, lon);
+            const cityName = `${weatherData.location.name}, ${weatherData.location.region}`;
+            setCity(cityName);
+            setWeather(weatherData);
+        } catch (err) {
+            setError('Failed to fetch forecast data');
         } finally {
             setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        fetchInitialForecast();
     }, []);
 
-    return { city, forecast, loading, error, handleCitySelect, setCity };
+    return {
+        city,
+        weather,
+        loading,
+        error,
+        fetchWeather,
+    };
 };
+
+export default useWeather;

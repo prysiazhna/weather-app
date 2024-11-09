@@ -28,3 +28,11 @@
         height: 150px;
     }
 }
+
+.icon-container:hover .custom-tooltip {
+    position: relative;
+}
+
+.today {
+    font-size: 14px;
+}

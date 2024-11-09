@@ -1,13 +1,19 @@
 import React from 'react';
-import { PhotonSuggestion } from '../../../types/WeatherTypes';
 import './SuggestionList.css';
 
-interface SuggestionListProps {
-    suggestions: PhotonSuggestion[];
-    onSelect: (city: PhotonSuggestion) => void;
+interface CitySuggestion {
+    name: string;
+    lat: string;
+    lon: string;
+    country: string;
 }
 
-const SuggestionList: React.FC<SuggestionListProps> = ({ suggestions, onSelect }) => {
+interface SuggestionListProps {
+    suggestions: CitySuggestion[];
+    onSelect: (city: CitySuggestion) => void;
+}
+
+const SuggestionList: React.FC<SuggestionListProps> = ({suggestions, onSelect}) => {
     if (suggestions.length === 0) return null;
 
     return (
@@ -18,11 +24,12 @@ const SuggestionList: React.FC<SuggestionListProps> = ({ suggestions, onSelect }
                     key={index}
                     className="suggestion-item"
                     onClick={() => onSelect(city)}>
-                    {city.name}, {city.countryName}
+                    {city.name}, {city.country || 'Unknown'}
                 </div>
             ))}
         </div>
     );
 };
+
 
 export default SuggestionList;

@@ -1,33 +1,27 @@
 import React from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
+import {Row, Col, Card} from 'react-bootstrap';
 import WeatherIcon from "../WeatherIcon/WeatherIcon";
 import './NextForecast.css';
+import {ForecastDay} from "../../../types/WeatherTypes";
+import {getWeekDay} from "../../../utils/getWeekDay";
 
 interface NextForecastProps {
-    periods: Array<{
-        number: number;
-        name: string;
-        temperature: number;
-        temperatureUnit: string;
-        shortForecast: string;
-        icon: string;
-        isDaytime: boolean;
-    }>;
+    nextDays: ForecastDay[];
 }
 
-const NextForecast: React.FC<NextForecastProps> = ({ periods }) => {
+const NextForecast: React.FC<NextForecastProps> = ({nextDays}) => {
     return (
         <Row data-testid="next-forecast" className="next-forecast gy-3">
-            {periods.map((period) => (
-                <Col data-testid="period" key={period.number} xs={12} md={4}>
+            {nextDays.map((nextDay, index) => (
+                <Col data-testid="period" key={index} xs={12} md={6}>
                     <Card className="text-center mb-4 forecast-card">
                         <Card.Body>
-                            <Card.Title className="mb-0">{period.name}</Card.Title>
-                            <WeatherIcon shortForecast={period.shortForecast} size="medium" isDaytime={period.isDaytime} />
+                            <Card.Title className="mb-0">{getWeekDay(nextDay.date)}</Card.Title>
+                            <WeatherIcon shortForecast={nextDay.day.condition.text} isDaytime={true} size="medium"/>
                             <Card.Text className="small-text">
-                                {period.temperature}°{period.temperatureUnit}
+                                {nextDay.day.avgtemp_f}°F
                             </Card.Text>
-                            <Card.Text className="small-text">{period.shortForecast}</Card.Text>
+                            <Card.Text className="small-text">{nextDay.day.condition.text}</Card.Text>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -35,6 +29,5 @@ const NextForecast: React.FC<NextForecastProps> = ({ periods }) => {
         </Row>
     );
 };
-
 
 export default NextForecast;
