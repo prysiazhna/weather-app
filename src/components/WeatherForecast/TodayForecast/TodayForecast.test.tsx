@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TodayForecast from './TodayForecast';
-import {mockCurrentWeather} from "../../../__mocks__/mockForecastData";
+import {mockCurrentWeather} from "@/__mocks__/mockForecastData";
 
 describe('TodayForecast Component', () => {
     const renderComponent = (props = {}) =>

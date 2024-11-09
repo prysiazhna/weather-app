@@ -1,4 +1,5 @@
-import {CurrentWeather, Day} from "../types/WeatherTypes";
+import {CurrentWeather, Day} from "@/models/WeatherTypes";
+
 export const mockCurrentWeather: CurrentWeather = {
     condition: { text: 'Partly Cloudy' },
     humidity: 50,

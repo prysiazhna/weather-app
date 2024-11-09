@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ForecastContent from './ForecastContent';
-import useWeather from '../../../hooks/useWeather';
-import {mockWeatherData} from "../../../__mocks__/mockForecastData";
+import {mockWeatherData} from "@/__mocks__/mockForecastData";
+import useWeather from "@/hooks/useWeather";
 
 jest.mock('../../../hooks/useWeather');
 

@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import NextForecast from './NextForecast';
-import { ForecastDay } from '../../../types/WeatherTypes';
-import { getWeekDay } from '../../../utils/getWeekDay';
-import {mockDayData} from "../../../__mocks__/mockForecastData";
+import {ForecastDay} from "@/models/WeatherTypes";
+import {mockDayData} from "@/__mocks__/mockForecastData";
+import {getWeekDay} from "@/helpers/getWeekDay";
 
 const createMockForecastDay = (
     date: string,

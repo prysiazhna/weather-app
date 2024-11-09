@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCurrentLocation } from '../utils/geolocation';
+import { getCurrentLocation } from '@/helpers/geolocation';
 
 interface UseCurrentLocationProps {
     fetchWeather: (lat: string, lon: string) => void;

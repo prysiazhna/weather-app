@@ -1,5 +1,5 @@
 import { apiClient } from './apiConfig';
-import {CitySuggestion} from "../types/WeatherTypes";
+import {CitySuggestion} from "@/models/WeatherTypes";
 
 export const handleApiError = (error: unknown): void => {
     console.error('API error occurred:', error);

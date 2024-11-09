@@ -3,8 +3,9 @@ import {Container, Row, Col} from 'react-bootstrap';
 import SearchBar from '../../Search/SearchBar/SearchBar';
 import TodayForecast from '../TodayForecast/TodayForecast';
 import NextForecast from '../NextForecast/NextForecast';
-import useCurrentLocation from '../../../hooks/useCurrentLocation';
-import useWeather from '../../../hooks/useWeather';
+import useCurrentLocation from "@/hooks/useCurrentLocation";
+import useWeather from "@/hooks/useWeather";
+
 
 const ForecastContent: React.FC = () => {
     const {city, weather, loading, error, fetchWeather} = useWeather();

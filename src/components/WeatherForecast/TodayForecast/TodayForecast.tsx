@@ -3,10 +3,10 @@ import {Card, Spinner, Alert} from 'react-bootstrap';
 import './TodayForecast.css';
 import WeatherIcon from "../WeatherIcon/WeatherIcon";
 import {InfoCircle} from 'react-bootstrap-icons';
-import {CurrentWeather} from "../../../types/WeatherTypes";
 import CustomTooltip from "../CustomTooltip/CustomTooltip";
-import {INFO} from "../../../config/constants";
-import {formatDate} from "../../../utils/getWeekDay";
+import {formatDate} from "@/helpers/getWeekDay";
+import {INFO} from "@/config/constants";
+import {CurrentWeather} from "@/models/WeatherTypes";
 
 interface WeatherCardProps {
     city: string| null;

@@ -2,8 +2,8 @@ import React from 'react';
 import {Row, Col, Card} from 'react-bootstrap';
 import WeatherIcon from "../WeatherIcon/WeatherIcon";
 import './NextForecast.css';
-import {ForecastDay} from "../../../types/WeatherTypes";
-import {getWeekDay} from "../../../utils/getWeekDay";
+import {getWeekDay} from "@/helpers/getWeekDay";
+import {ForecastDay} from "@/models/WeatherTypes";
 
 interface NextForecastProps {
     nextDays: ForecastDay[];

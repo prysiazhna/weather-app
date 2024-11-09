@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useDebounce } from './useDebounce';
-import {fetchCitySuggestions, handleApiError} from '../api/weatherService';
-import { CitySuggestion } from '../types/WeatherTypes';
+import {CitySuggestion} from "@/models/WeatherTypes";
+import {fetchCitySuggestions, handleApiError} from "@/api/weatherService";
 
 const useCitySearch = (fetchWeather: (lat: string, lon: string, city?: string) => void) => {
     const [inputValue, setInputValue] = useState('');

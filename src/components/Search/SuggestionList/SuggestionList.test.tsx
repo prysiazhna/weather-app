@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SuggestionList from './SuggestionList';
-import {mockSuggestions} from "../../../__mocks__/mockForecastData";
+import {mockSuggestions} from "@/__mocks__/mockForecastData";
 
 describe('SuggestionList component', () => {
     const mockOnSelect = jest.fn();
